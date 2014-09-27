@@ -1,5 +1,14 @@
 #include <Wire.h>
 #include <SdFat.h>
+#include <Wiegand.h>
+#include <easyscheduler.h>
+
+Schedular updater;
+Schedular validator;
+
+WIEGAND wg;
+long code;
+
 #define TOTAL_USERS 10
 #define SITE 10
 
@@ -8,6 +17,7 @@ static int access[TOTAL_USERS];
 static int index;
 
 #include "storage.h"
+#include "rfid.h"
 
 void setup()
 {        
@@ -20,6 +30,9 @@ void setup()
     }
     connectToSD();
     initConfig();
+    initRfid();
+    updater.start();
+    validator.start();
 }
 
 void printSlaveData(){
@@ -34,13 +47,10 @@ void printSlaveData(){
 
 void loop()
 {
-	delay(100);
-	printSlaveData();	
-	delay(60000);
-	updateConfig();
+	delay(1000);
+	updater.check(updateConfig, 10000);
+	validator.check(checkRfid, 1);
 }
-
-
 
 void receiveEvent(int howMany)
 {
