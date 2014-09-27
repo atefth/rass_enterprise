@@ -79,7 +79,7 @@ void initConfig(){
             digits[i] = 0;
           }
           //read all 9 rfid digits
-          for (int i = 0; i < 9; i++)
+          for (int i = 0; i < 7; i++)
           {
             digits[i] = c;
             data = config.read();

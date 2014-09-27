@@ -123,11 +123,11 @@ String url = "AT+HTTPPARA=\"URL\",";
 boolean readUserAccessRight(){
     boolean isLoss = true;
 	int count = 0;
-    char tempUsers[TOTAL_USERS][9];
+    char tempUsers[TOTAL_USERS][RFID_NUM];
     int tempAccess[TOTAL_USERS];
 
     char justRead = ' ';
-    char totalRead[9];
+    char totalRead[RFID_NUM];
 
     while(gsm.available()!=0 && justRead != '>'){
       justRead = gsm.read();
@@ -135,7 +135,7 @@ boolean readUserAccessRight(){
     int index = 0;
     while(gsm.available()!=0){
         justRead = gsm.read();
-        if (count == 9)
+        if (count == RFID_NUM)
         {
             count = 0;          
             index++;

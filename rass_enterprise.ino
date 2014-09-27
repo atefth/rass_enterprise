@@ -1,5 +1,6 @@
 #define TOTAL_RELAYS 6
 #define TOTAL_USERS 10
+#define RFID_NUM 7
 #define SITE 10
 String SITE_URL = "\"softbot-ras.herokuapp.com/";
 #define BAUDRATE 19200
