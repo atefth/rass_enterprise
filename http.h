@@ -208,6 +208,7 @@ boolean syncServer(){
         setLastSyncTime(millis());
         incrementSuccessfulRequests();
         printConfigData();
+        updateConfig();
     }else{
         incrementFailedRequests();
                
@@ -218,7 +219,5 @@ boolean syncServer(){
 
 void performSync(){
     printProcessing();
-    if(syncServer()){
-        updateConfig();
-    }
+    syncServer();
 }

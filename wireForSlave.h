@@ -56,7 +56,7 @@ void wireDataToSlave(){
 			}
 		}
 		Wire.endTransmission();
-		delay(500);		
+		delay(100);		
 	}	
 }
 

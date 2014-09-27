@@ -35,15 +35,15 @@ void setup()
 	//printDownTime.start();
 	//printSiteStatus.start();
 	//updater.start();
-    //sync.start();
+    sync.start();
 }
 
 void loop()
 {
-	//sync.check(performSync, 8000);
-	performSync();
+	sync.check(performSync, 8000);
+	//performSync();
 	//updateConfig();
-	showUserData();
+	//showUserData();
 	//showDownTime.check(showSyncDuration, 1000);
 	//printDownTime.check(printTimeData, 1000);
 	//printSiteStatus.check(printSiteData, 10000);
