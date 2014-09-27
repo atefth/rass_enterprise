@@ -132,49 +132,36 @@ boolean readUserAccessRight(){
 
     while(gsm.available()!=0 && justRead != '>'){
       justRead = gsm.read();
-      Serial.println(justRead);
     }
     int index = 0;
     while(gsm.available()!=0){
         justRead = gsm.read();
-        Serial.println(justRead);
-        // if (count == 9)
-        // {
-        //     count = 0;
-        //     justRead = gsm.read();
-        //     Serial.println(justRead);
-        //     if (justRead == 'T')
-        //     {
-        //         tempAccess[index] = 1;
-        //     }else{
-        //         tempAccess[index] = 0;
-        //     }
-            
-        //     index++;
-        // }
-        // if(justRead == '>' || justRead == 'T' || justRead == 'F' || justRead == '!'){
-        //     isLoss = false;        
-        // }
-        // if(justRead == '0' || justRead == '1'|| justRead == '2'|| justRead == '3'|| justRead == '4'|| justRead == '5'|| justRead == '6'|| justRead == '7'|| justRead == '8'|| justRead == '9'){            
-        //     tempUsers[index][count] = justRead;
-        //     count++;
-        // }
-        // if(index == TOTAL_USERS) break;
+        if (count == 9)
+        {
+            count = 0;          
+            index++;
+        }
+        if(justRead == '>' || justRead == '!'){
+            isLoss = false;        
+        }
+        if(justRead == '0' || justRead == '1'|| justRead == '2'|| justRead == '3'|| justRead == '4'|| justRead == '5'|| justRead == '6'|| justRead == '7'|| justRead == '8'|| justRead == '9'){            
+            tempUsers[index][count] = justRead;
+            count++;
+        }
+        if(index == TOTAL_USERS) break;
     }
     if (!isLoss)
     {
         for(int i=0; i<TOTAL_USERS; i++){
-            Serial.print("User ");
+            Serial.print("Temp array ");
             Serial.print(i);
             Serial.print(" has rfid ");
             for(int j=0; j<9; j++){
                 Serial.print(tempUsers[i][j]);
             }
-            Serial.print(" and access ");
-            Serial.println(tempAccess[i]);
+            Serial.println();
         }
-        //updateRfid(tempUsers);
-        //updateAccessRight(tempAccess);
+        updateRfid(tempUsers);
     }
 }
 
@@ -186,11 +173,9 @@ boolean readRelay(){
     int count = 0;
     while(gsm.available()!=0 && justRead != '>'){
       justRead = gsm.read();
-      Serial.println(justRead);
     }
     while(gsm.available()!=0){      
         justRead = gsm.read();
-        Serial.println(justRead);
         if(justRead == '>'){
             isLoss = false;        
         }
@@ -218,33 +203,23 @@ boolean readRelay(){
 boolean syncServer(){
 	attemptRequest();
     boolean isLoss = true;
-    // boolean relayLoss;
-    // boolean userLoss;
-    // while(gsm.available()){
-    //     Serial.println((char)gsm.read());
-    //     delay(200);
-    // }
-    boolean relayLoss = readRelay();
-    boolean userLoss = readUserAccessRight();
+    boolean relayLoss = readRelay();        
+    if (!relayLoss){
+        boolean userLoss = readUserAccessRight();
+        isLoss = false;
+    }
     terminateRequest();
     clearSerialData();
-    if (!relayLoss && !userLoss){
-      isLoss = false;
-    }
     if (!isLoss)
     {
         setLastSyncTime(millis());
         incrementSuccessfulRequests();
-        showRequestData();
-        showSiteData(); 
-        showRelayData();
-        showUserData();
         printConfigData();
     }else{
         incrementFailedRequests();
                
     }
-    updateFailRate(); 
+    updateFailRate();
     return isLoss;
 }
 

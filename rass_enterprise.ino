@@ -8,8 +8,8 @@ static int connection;
 #include "relays.h"
 #include "users.h"
 #include "site.h"
-//#include <Wire.h>
-//#include "wireForSlave.h"
+#include <Wire.h>
+#include "wireForSlave.h"
 #include <SoftwareSerial.h>
 #include <LCD5110_Graph.h>
 #include "lcd.h"
@@ -29,19 +29,20 @@ void setup()
 	initSite();
     initLCD();
 	initGsm(19200);
-    //initWire();
-	showDownTime.start();
-	printDownTime.start();
-	printSiteStatus.start();
+    initWire();
+	//showDownTime.start();
+	//printDownTime.start();
+	//printSiteStatus.start();
 //	updater.start();
     sync.start();
 }
 
 void loop()
 {
-	sync.check(performSync, 8000);
+	//sync.check(performSync, 8000);
+	performSync();
 	//updater.check(updateConfig, 100000);
-	//showUserData();
+	showUserData();
 	//showDownTime.check(showSyncDuration, 1000);
 	//printDownTime.check(printTimeData, 1000);
 	//printSiteStatus.check(printSiteData, 10000);
