@@ -44,5 +44,6 @@ Structure of modules
 	void clearSerialData()
 	void showSerialData()
 
+#lcd.h
 
 

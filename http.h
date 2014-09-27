@@ -1,8 +1,6 @@
 #define GSM_POWER 6
 SoftwareSerial gsm(50, 51);
 
-static int connection;
-
 void clearSerialData(){
 	while(gsm.available()!=0)
 	gsm.read();
@@ -13,6 +11,18 @@ void showSerialData(){
 	Serial.write(gsm.read());
 }
 
+void showRequestData(){
+    Serial.print("Successful : ");
+    Serial.print(getSuccessfulRequests());
+    Serial.print(" Failed : ");
+    Serial.print(getFailedRequests());
+    Serial.print(" Total : ");
+    Serial.print(getTotalRequests());
+    Serial.print(" Fail Rate : ");
+    Serial.print(getFailRate());
+    Serial.println(" %");
+}
+
 void checkConnection(){
     char current;
     while(gsm.available() != 0){
@@ -20,8 +30,13 @@ void checkConnection(){
 		if ( current == '1')
 		{
 	    	connection = true;
-		}
+            Serial.println("Connected!");
+		}else if( current == '0'){
+            Serial.println("Not Connected... Retrying!");
+        }
     }
+    printConnectionData();
+    delay(100);
 }
 
 void powerOn(){
@@ -35,7 +50,7 @@ void powerOn(){
 void initGsm(int rate){
     gsm.begin(rate);
     Serial.begin(rate);
-    Serial.println("initializing GSM");
+    Serial.println("Initializing GSM");
     powerOn();
     connection = false;
     while(!connection){
@@ -96,7 +111,7 @@ void makeRequest(String url){
     // read the data from the website you access
     gsm.println("AT+HTTPREAD");  
     delay(1000);
-    totalRequests++;
+    incrementTotalRequests();
 }
 
 void attemptRequest(){
@@ -109,7 +124,7 @@ String url = "AT+HTTPPARA=\"URL\",";
 boolean readUserAccessRight(){
     boolean isLoss = true;
 	int count = 0;
-    long tempUsers[TOTAL_USERS];
+    char tempUsers[TOTAL_USERS][9];
     int tempAccess[TOTAL_USERS];
 
     char justRead = ' ';
@@ -117,38 +132,49 @@ boolean readUserAccessRight(){
 
     while(gsm.available()!=0 && justRead != '>'){
       justRead = gsm.read();
+      Serial.println(justRead);
     }
-    int counter = 0;
-    while(gsm.available()!=0){      
+    int index = 0;
+    while(gsm.available()!=0){
         justRead = gsm.read();
-        if (count == 9)
-        {
-            count = 0;
-            tempUsers[counter] = atol(totalRead);
-            if(tempUsers[counter] < 1000){
-              tempUsers[counter] = 0;
-              tempAccess[counter] = 0;
-              break;
-            }
-            justRead = gsm.read();
-            tempAccess[counter] = 1;
-            counter++;
-        }
-        if(justRead == '>' || justRead == 'T' || justRead == 'F' || justRead == '!'){
-            isLoss = false;        
-        }else if(justRead == '0' || justRead == '1'|| justRead == '2'|| justRead == '3'|| justRead == '4'|| justRead == '5'|| justRead == '6'|| justRead == '7'|| justRead == '8'|| justRead == '9'){
-            totalRead[count] = justRead;
-            count++;
-        }        
-        if(counter == TOTAL_USERS) break;
+        Serial.println(justRead);
+        // if (count == 9)
+        // {
+        //     count = 0;
+        //     justRead = gsm.read();
+        //     Serial.println(justRead);
+        //     if (justRead == 'T')
+        //     {
+        //         tempAccess[index] = 1;
+        //     }else{
+        //         tempAccess[index] = 0;
+        //     }
+            
+        //     index++;
+        // }
+        // if(justRead == '>' || justRead == 'T' || justRead == 'F' || justRead == '!'){
+        //     isLoss = false;        
+        // }
+        // if(justRead == '0' || justRead == '1'|| justRead == '2'|| justRead == '3'|| justRead == '4'|| justRead == '5'|| justRead == '6'|| justRead == '7'|| justRead == '8'|| justRead == '9'){            
+        //     tempUsers[index][count] = justRead;
+        //     count++;
+        // }
+        // if(index == TOTAL_USERS) break;
     }
     if (!isLoss)
     {
-        for (int i = 0; i < counter; i++)
-        {
-            userRfid[i] = tempUsers[i];
-            userAccess[i] = tempAccess[i];
+        for(int i=0; i<TOTAL_USERS; i++){
+            Serial.print("User ");
+            Serial.print(i);
+            Serial.print(" has rfid ");
+            for(int j=0; j<9; j++){
+                Serial.print(tempUsers[i][j]);
+            }
+            Serial.print(" and access ");
+            Serial.println(tempAccess[i]);
         }
+        //updateRfid(tempUsers);
+        //updateAccessRight(tempAccess);
     }
 }
 
@@ -160,12 +186,15 @@ boolean readRelay(){
     int count = 0;
     while(gsm.available()!=0 && justRead != '>'){
       justRead = gsm.read();
+      Serial.println(justRead);
     }
     while(gsm.available()!=0){      
         justRead = gsm.read();
+        Serial.println(justRead);
         if(justRead == '>'){
             isLoss = false;        
-        }else if(justRead == '0' || justRead == '1'){
+        }
+        if(justRead == '0' || justRead == '1'){
             if (justRead == '0')
             {
                 temp[count] = 0;
@@ -188,14 +217,40 @@ boolean readRelay(){
 
 boolean syncServer(){
 	attemptRequest();
-        boolean isLoss = true;
-	isLoss = readRelay();
+    boolean isLoss = true;
+    // boolean relayLoss;
+    // boolean userLoss;
+    // while(gsm.available()){
+    //     Serial.println((char)gsm.read());
+    //     delay(200);
+    // }
+    boolean relayLoss = readRelay();
+    boolean userLoss = readUserAccessRight();
+    terminateRequest();
+    clearSerialData();
+    if (!relayLoss && !userLoss){
+      isLoss = false;
+    }
+    if (!isLoss)
+    {
+        setLastSyncTime(millis());
+        incrementSuccessfulRequests();
+        showRequestData();
+        showSiteData(); 
         showRelayData();
-	isLoss = readUserAccessRight();
         showUserData();
-	setLastSyncTime(millis());
-	showSiteData();
-        terminateRequest();
-        clearSerialData();
-        return isLoss;
+        printConfigData();
+    }else{
+        incrementFailedRequests();
+               
+    }
+    updateFailRate(); 
+    return isLoss;
+}
+
+void performSync(){
+    printProcessing();
+    if(syncServer()){
+        //updateConfig();
+    }
 }

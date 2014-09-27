@@ -1,23 +1,32 @@
-long userRfid[TOTAL_USERS];
-int userAccess[TOTAL_USERS];
+static char userRfid[TOTAL_USERS][9];
+static int userAccess[TOTAL_USERS];
 
 void initusers(){
+	Serial.println("Initializing Users");
 	for(int i=0; i<TOTAL_USERS; i++){
-	    userRfid[i] = 0;
+	    for (int j = 0; j < 9; j++)
+	    {
+	    	userRfid[i][j] = '0';
+	    }
 	    userAccess[i] = 0;
 	}
 }
 
-void setRfid(int id, long rfid){
-	userRfid[id] = rfid;
+void updateRfid(char rfid[TOTAL_USERS][9]){
+	for (int i = 0; i < TOTAL_USERS; i++)
+	{
+		for (int j = 0; j < 9; ++j)
+		{
+			userRfid[i][j] = rfid[i][j];
+		}
+	}
 }
 
-long getRfid(int id, long rfid){
-	return userRfid[id];
-}
-
-void setAccessRight(int id, int access){
-	userAccess[id] = access;
+void updateAccessRight(int access[]){
+	for (int i = 0; i < TOTAL_USERS; i++)
+	{
+		userAccess[i] = access[i];
+	}
 }
 
 long getAccessRight(long rfid){
@@ -27,7 +36,10 @@ long getAccessRight(long rfid){
 void showUserData(){
 	for(int i=0; i<TOTAL_USERS; i++){
 	    Serial.print("User with rfid ");
-	    Serial.print(userRfid[i]);
+	    for (int j = 0; j < 9; j++)
+	    {
+	    	Serial.print(userRfid[i][j]);
+	    }
 	    Serial.print(" has access ");
 	    Serial.print(userAccess[i]);
 	    Serial.println();

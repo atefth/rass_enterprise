@@ -7,6 +7,7 @@ static int totalRequests;
 static double failRate;
 
 void initSite(){
+	Serial.println("Initializing Site");
 	successfulRequests = 0;
 	failedRequests = 0;
 	totalRequests = 0;
@@ -21,13 +22,34 @@ long getLastSyncTime(){
 	return lastSyncTime;
 }
 
+long getSyncDuration(){
+	return syncDuration;
+}
+
 void setLastSyncTime(long timeToSet){
 	lastSyncTime = timeToSet;
 }
 
-int getSyncDuration(){
+void showSyncDuration(){
 	syncDuration =  millis() - lastSyncTime;
-	return syncDuration;
+	Serial.print(syncDuration * 1.0/1000);
+	Serial.println(" seconds and counting...");
+}
+
+void incrementSuccessfulRequests(){
+	successfulRequests++;
+}
+
+void incrementFailedRequests(){
+	failedRequests++;
+}
+
+void incrementTotalRequests(){
+	totalRequests++;
+}
+
+void updateFailRate(){
+	failRate = ((failedRequests * 1.0/ totalRequests) * 100.0);
 }
 
 int getSuccessfulRequests(){
@@ -49,6 +71,6 @@ double getFailRate(){
 void showSiteData(){
 	Serial.print("Site ");
 	Serial.print(SITE);
-	Serial.print(" time until last sync ");
-	Serial.print(syncDuration);
+	Serial.print(" - last sync time - ");
+	Serial.println(syncDuration * 1.0 / 1000);
 }
