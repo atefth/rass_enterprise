@@ -28,20 +28,21 @@ void setup()
 	initusers();
 	initSite();
     initLCD();
-	initGsm(19200);
-    initWire();
+    Serial.begin(19200);    
+	initGsm(19200);    
+	initWire();
 	//showDownTime.start();
 	//printDownTime.start();
 	//printSiteStatus.start();
-//	updater.start();
-    sync.start();
+	//updater.start();
+    //sync.start();
 }
 
 void loop()
 {
 	//sync.check(performSync, 8000);
 	performSync();
-	//updater.check(updateConfig, 100000);
+	//updateConfig();
 	showUserData();
 	//showDownTime.check(showSyncDuration, 1000);
 	//printDownTime.check(printTimeData, 1000);

@@ -48,8 +48,8 @@ void powerOn(){
 }
 
 void initGsm(int rate){
-    gsm.begin(rate);
     Serial.begin(rate);
+    gsm.begin(rate);
     Serial.println("Initializing GSM");
     powerOn();
     connection = false;
@@ -117,7 +117,6 @@ void makeRequest(String url){
 void attemptRequest(){
 String url = "AT+HTTPPARA=\"URL\",";
     url += SITE_URL + "syncServer/" + SITE + "\"";
-    Serial.println(url);
     makeRequest(url);
 }
 
@@ -152,15 +151,6 @@ boolean readUserAccessRight(){
     }
     if (!isLoss)
     {
-        for(int i=0; i<TOTAL_USERS; i++){
-            Serial.print("Temp array ");
-            Serial.print(i);
-            Serial.print(" has rfid ");
-            for(int j=0; j<9; j++){
-                Serial.print(tempUsers[i][j]);
-            }
-            Serial.println();
-        }
         updateRfid(tempUsers);
     }
 }
@@ -206,7 +196,10 @@ boolean syncServer(){
     boolean relayLoss = readRelay();        
     if (!relayLoss){
         boolean userLoss = readUserAccessRight();
-        isLoss = false;
+        if (!userLoss)
+        {
+            isLoss = false;
+        }        
     }
     terminateRequest();
     clearSerialData();
@@ -226,6 +219,6 @@ boolean syncServer(){
 void performSync(){
     printProcessing();
     if(syncServer()){
-        //updateConfig();
+        updateConfig();
     }
 }

@@ -1,12 +1,13 @@
-void initWire(){
+void initWire(){    
 	Wire.begin();
 }
 
 void wireDataToSlave(){
-	char temp;
-	for (int i = 0; i < TOTAL_USERS; i++){
+	char temp;	
+	for (int i = 0; i < 10; i++){		
 		Wire.beginTransmission(4);
-		if (userRfid[i] == "000000000"){
+		Wire.write(i);
+		if (userRfid[i] == "000000000"){			
 			Wire.write(0);
 			Wire.write(0);
 			Wire.write(0);
@@ -19,7 +20,7 @@ void wireDataToSlave(){
 		}else{
 			for (int j = 0; j < 9; j++)
 			{
-				temp = userRfid[i][j];
+				temp = userRfid[i][j];				
 				switch(temp){
 					case '0':
 						Wire.write(0);
@@ -55,8 +56,8 @@ void wireDataToSlave(){
 			}
 		}
 		Wire.endTransmission();
-		delay(500);
-	}
+		delay(500);		
+	}	
 }
 
 void updateConfig(){
