@@ -66,3 +66,15 @@ boolean isDoorOpen(){
   boolean isMainsOn(){
     return statuses[5];
   }
+
+  void updateRelayStatus(){
+  	for (int i = 0; i < TOTAL_RELAYS; i++)
+  	{
+  		if (statuses[i] == 1)
+  		{
+  			turnOnRelay(i);
+  		}else{
+        turnOffRelay(i);
+      }
+  	}
+  }

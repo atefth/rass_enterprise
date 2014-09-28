@@ -12,9 +12,13 @@ long code;
 #define TOTAL_USERS 10
 #define SITE 10
 
-#define MASTER 8
+#define DENIED 7
+#define GRANTED 8
+#define DOOR 9
 
 static long rfid[TOTAL_USERS];
+static long currentUser;
+static int currentAccess;
 static int access[TOTAL_USERS];
 static int index;
 
@@ -23,9 +27,12 @@ static int index;
 
 void setup()
 {        
-	pinMode(MASTER, OUTPUT);
+	pinMode(GRANTED, OUTPUT);
+	pinMode(DENIED, OUTPUT);
+	pinMode(DOOR, OUTPUT);
 	Wire.begin(4);
 	Wire.onReceive(receiveEvent);
+	Wire.onRequest(requestEvent);
     Serial.begin(19200);
     index = 0;
     for(int x=0; x<TOTAL_USERS; x++){
@@ -51,14 +58,13 @@ void printSlaveData(){
 void loop()
 {
 	delay(1000);
-	updater.check(updateConfig, 10000);
+	updater.check(updateConfig, 60000);
 	validator.check(checkRfid, 1);
 }
 
 void receiveEvent(int howMany)
 {
 	String digits;
-	int count = 0;
 	
 	int i = 0;
 	index = Wire.read();
@@ -72,6 +78,8 @@ void receiveEvent(int howMany)
 	    temp[z] = digits[z];
 	}
 	rfid[index] = atol(temp);
-	// Serial.println(rfid[index]);
-	// updateConfig();
+}
+
+void requestEvent(){
+	wireToMaster();
 }

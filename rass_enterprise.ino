@@ -6,6 +6,9 @@ String SITE_URL = "\"softbot-ras.herokuapp.com/";
 #define BAUDRATE 19200
 static int connection;
 
+static boolean cardSwiped = false;
+static boolean doorClosed = true;
+
 #include "relays.h"
 #include "users.h"
 #include "site.h"
@@ -15,6 +18,7 @@ static int connection;
 #include <LCD5110_Graph.h>
 #include "lcd.h"
 #include "http.h"
+#include "rfid.h"
 #include <easyscheduler.h>
 
 Schedular showDownTime;
@@ -30,23 +34,32 @@ void setup()
 	initSite();
     initLCD();
     Serial.begin(19200);    
-	initGsm(19200);    
+	initGsm(19200);
 	initWire();
+	initRfid();
 	//showDownTime.start();
 	//printDownTime.start();
 	//printSiteStatus.start();
 	//updater.start();
-    sync.start();
-}
-
-void onCardSwipe(){
-	
+    sync.start();    
 }
 
 void loop()
 {
-	sync.check(performSync, 8000);
-	//performSync();
+	sync.check(performSync, 10000);
+	if(cardSwiped){
+	    while(cardSwiped){
+	        performRfidSync();
+	        delay(500);
+	    }
+	}
+	if(!doorClosed){
+	    while(!doorClosed){
+	        performDoorSync();
+	        delay(500);
+	    }
+	}
+	// performSync();
 	//updateConfig();
 	//showUserData();
 	//showDownTime.check(showSyncDuration, 1000);

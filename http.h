@@ -92,6 +92,10 @@ void terminateRequest(){
 }
 
 void makeRequest(String url){
+
+    String requestURL = "AT+HTTPPARA=\"URL\",";
+    requestURL += SITE_URL + url;
+
     initRequest();
 
     gsm.println("AT+HTTPPARA=\"CID\",1");  
@@ -99,7 +103,8 @@ void makeRequest(String url){
     showSerialData();
     
     // setting the httppara, the second parameter is the website you want to access
-    gsm.println(url);
+    Serial.println(requestURL);
+    gsm.println(requestURL);
     delay(500);
     showSerialData();
    
@@ -114,9 +119,21 @@ void makeRequest(String url){
     incrementTotalRequests();
 }
 
-void attemptRequest(){
-String url = "AT+HTTPPARA=\"URL\",";
-    url += SITE_URL + "syncServer/" + SITE + "\"";
+void attemptSyncRequest(){
+    String url = "syncServer/";
+    url =  url + SITE + "\"";
+    makeRequest(url);
+}
+
+void attemptDoorCloseRequest(){
+    String url = "closeDoor/";
+    url = url + SITE +"\"";
+    makeRequest(url);
+}
+
+void attemptRfidRequest(){
+    String url = "remoteToOrigin/";
+    url = url + SITE + "/0/1/1234567/1/10/10/2014/12/34/14" + "\"";
     makeRequest(url);
 }
 
@@ -191,10 +208,11 @@ boolean readRelay(){
 }
 
 boolean syncServer(){
-	attemptRequest();
+	attemptSyncRequest();
     boolean isLoss = true;
-    boolean relayLoss = readRelay();        
+    boolean relayLoss = readRelay();
     if (!relayLoss){
+        updateRelayStatus();
         boolean userLoss = readUserAccessRight();
         if (!userLoss)
         {
@@ -220,4 +238,45 @@ boolean syncServer(){
 void performSync(){
     printProcessing();
     syncServer();
+}
+
+boolean verifyPacket(){
+    boolean isLoss = true;
+    char justRead = ' ';
+    while(gsm.available()!=0){
+        justRead = gsm.read();
+        if (justRead == '#')
+        {
+            isLoss = false;
+        }
+    }
+    return isLoss;
+}
+
+boolean syncDoorClose(){
+    terminateRequest();
+    clearSerialData();
+    attemptDoorCloseRequest();
+    terminateRequest();
+    clearSerialData();
+    return verifyPacket();
+}
+
+void performDoorSync(){
+    boolean isLoss = syncDoorClose();
+}
+
+boolean syncRfid(){
+    terminateRequest();
+    clearSerialData();
+    long rfid = readRfidFromSlave();
+    Serial.println(rfid);
+    attemptRfidRequest();
+    terminateRequest();
+    clearSerialData();
+    return verifyPacket();
+}
+
+void performRfidSync(){
+    boolean isLoss = syncRfid();
 }
