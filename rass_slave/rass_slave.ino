@@ -17,7 +17,7 @@ long code;
 #define DOOR 9
 
 static long rfid[TOTAL_USERS];
-static long currentUser;
+static char currentUser[7];
 static int currentAccess;
 static int access[TOTAL_USERS];
 static int index;

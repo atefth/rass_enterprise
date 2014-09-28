@@ -64,24 +64,30 @@ void updateConfig(){
 	wireDataToSlave();
 }
 
+int readAccessFromSlave(){
+	int access = Wire.read();
+	Serial.println(access);
+}
+
 long readRfidFromSlave(){
 	Wire.requestFrom(4, 8);
 
 	while(Wire.available()) { 
-		String digits;	
-		int i = 0;
-		access = Wire.read();
-	    while(1 < Wire.available()) {
-		  digits = digits + Wire.read();	  
-		  i++;
-		}
-		digits = digits + Wire.read();
-		char temp[7];
-		for(int z=0; z<7; z++){
-		    temp[z] = digits[z];
-		}
-		return atol(temp);
+		// String digits;
+		// int i = 0;
+		// readAccessFromSlave();
+	 //    while(1 < Wire.available()) {
+		//   digits = digits + Wire.read();	  
+		//   i++;
+		// }
+		// digits = digits + Wire.read();
+		// char temp[7];
+		// for(int z=0; z<7; z++){
+		//     temp[z] = (char)digits[z];
+		// }
+		// return atol(temp);
+		Serial.println(Wire.read());
 	}
-
+	return 0;
 	delay(500);
 }

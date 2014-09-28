@@ -11,6 +11,6 @@ void onDoorClose(){
 }
 
 void initRfid(){
-	attachInterrupt(5, onCardSwipe, RISING);
-	attachInterrupt(4, onDoorClose, RISING);
+	attachInterrupt(5, onCardSwipe, CHANGE);
+	attachInterrupt(4, onDoorClose, CHANGE);
 }

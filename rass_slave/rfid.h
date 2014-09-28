@@ -4,27 +4,30 @@ void initRfid() {
 
 void notifyMaster(){
 	digitalWrite(GRANTED, HIGH);
-	delay(1000);
+	delay(10);
 	digitalWrite(GRANTED, LOW);
-	delay(1000);
+	delay(10);
 }
 
 void alertMaster(){
 	digitalWrite(DENIED, HIGH);
-	delay(1000);
+	delay(10);
 	digitalWrite(DENIED, LOW);
-	delay(1000);
+	delay(10);
 }
 
 void wireToMaster(){	
 	Wire.write(currentAccess);
-	Wire.write(currentUser);
+	for (int i = 0; i < 7; i++)
+	{
+		Wire.write(currentUser[i]);
+	}	
 }
 
 void openDoor(){
-	digitalWrite(DENIED, HIGH);
+	digitalWrite(DOOR, LOW);
 	delay(2000);
-	digitalWrite(DENIED, LOW);
+	digitalWrite(DOOR, HIGH);
 	delay(100);
 }
 
@@ -32,15 +35,24 @@ void checkRfid(){
 	if(wg.available())
 	{		
         code = wg.getCode();
-		for(int i=0; i<TOTAL_USERS; i++){
+        String digits;
+		for(int i=0; i<TOTAL_USERS; i++){			
+	    	digits = "0" + rfid[i];
 		    if (code == rfid[i])
 			{
 				openDoor();
 				notifyMaster();
-	        	currentUser = rfid[i];
+				for (int j = 1; j < 8; j++)
+	        	{
+	        		currentUser[i-1] = digits[i];
+	        	}	        	
 	        	currentAccess = 1;
 	        }else{
 	        	alertMaster();
+	        	for (int j = 1; j < 8; j++)
+	        	{
+	        		currentUser[i-1] = digits[i];
+	        	}
 	        	currentUser = rfid[i];
 	        	currentAccess = 0;
 	        }
