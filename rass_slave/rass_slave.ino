@@ -12,6 +12,8 @@ long code;
 #define TOTAL_USERS 10
 #define SITE 10
 
+#define MASTER 8
+
 static long rfid[TOTAL_USERS];
 static int access[TOTAL_USERS];
 static int index;
@@ -21,6 +23,7 @@ static int index;
 
 void setup()
 {        
+	pinMode(MASTER, OUTPUT);
 	Wire.begin(4);
 	Wire.onReceive(receiveEvent);
     Serial.begin(19200);
@@ -64,8 +67,8 @@ void receiveEvent(int howMany)
 	  i++;
 	}
 	digits = digits + Wire.read();
-	char temp[9];
-	for(int z=0; z<9; z++){
+	char temp[7];
+	for(int z=0; z<7; z++){
 	    temp[z] = digits[z];
 	}
 	rfid[index] = atol(temp);

@@ -2,6 +2,13 @@ void initRfid() {
 	wg.begin();
 }
 
+void alertMaster(){
+	digitalWrite(MASTER, HIGH);
+	delay(1000);
+	digitalWrite(MASTER, LOW);
+	delay(1000);
+}
+
 void checkRfid(){
 	if(wg.available())
 	{		
@@ -11,9 +18,7 @@ void checkRfid(){
 			{
 	        	Serial.println(code);
 				Serial.println("Granted");
-			}else{
-	            Serial.println(code);
-	            Serial.println("Denied");
+				alertMaster();
 	        }
 		}
 	}

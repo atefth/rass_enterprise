@@ -39,6 +39,10 @@ void setup()
     sync.start();
 }
 
+void onCardSwipe(){
+	
+}
+
 void loop()
 {
 	sync.check(performSync, 8000);
