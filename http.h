@@ -257,13 +257,18 @@ boolean syncDoorClose(){
     terminateRequest();
     clearSerialData();
     attemptDoorCloseRequest();
+    boolean isLoss = verifyPacket();
     terminateRequest();
     clearSerialData();
-    return verifyPacket();
+    return isLoss;
 }
 
 void performDoorSync(){
     boolean isLoss = syncDoorClose();
+    if (!isLoss)
+    {
+        doorClosed = true;
+    }
 }
 
 boolean syncRfid(){
@@ -272,11 +277,16 @@ boolean syncRfid(){
     long rfid = readRfidFromSlave();
     Serial.println(rfid);
     attemptRfidRequest();
+    boolean isLoss = verifyPacket();
     terminateRequest();
     clearSerialData();
-    return verifyPacket();
+    return isLoss;
 }
 
 void performRfidSync(){
     boolean isLoss = syncRfid();
+    if (!isLoss)
+    {
+        cardSwiped = false;
+    }
 }

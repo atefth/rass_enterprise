@@ -20,7 +20,38 @@ void wireToMaster(){
 	Wire.write(currentAccess);
 	for (int i = 0; i < 7; i++)
 	{
-		Wire.write(currentUser[i]);
+		switch(currentUser[i]){
+			case '0':
+				Wire.write(0);
+				break;
+			case '1':
+				Wire.write(1);
+				break;
+			case '2':
+				Wire.write(2);
+				break;
+			case '3':
+				Wire.write(3);
+				break;
+			case '4':
+				Wire.write(4);
+				break;
+			case '5':
+				Wire.write(5);
+				break;
+			case '6':
+				Wire.write(6);
+				break;
+			case '7':
+				Wire.write(7);
+				break;
+			case '8':
+				Wire.write(8);
+				break;
+			case '9':
+				Wire.write(9);
+				break;
+		}
 	}	
 }
 
@@ -37,23 +68,22 @@ void checkRfid(){
         code = wg.getCode();
         String digits;
 		for(int i=0; i<TOTAL_USERS; i++){			
-	    	digits = "0" + rfid[i];
+	    	digits = String(code, DEC);
 		    if (code == rfid[i])
 			{
 				openDoor();
 				notifyMaster();
 				for (int j = 1; j < 8; j++)
 	        	{
-	        		currentUser[i-1] = digits[i];
+	        		currentUser[j-1] = digits[j];
 	        	}	        	
 	        	currentAccess = 1;
 	        }else{
 	        	alertMaster();
 	        	for (int j = 1; j < 8; j++)
 	        	{
-	        		currentUser[i-1] = digits[i];
+	        		currentUser[j-1] = digits[j];
 	        	}
-	        	currentUser = rfid[i];
 	        	currentAccess = 0;
 	        }
 		}

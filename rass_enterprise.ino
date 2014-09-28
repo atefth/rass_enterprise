@@ -48,16 +48,16 @@ void loop()
 {
 	sync.check(performSync, 10000);
 	if(cardSwiped){
-	    while(cardSwiped){
-	        performRfidSync();
-	        delay(500);
-	    }
+		do{
+		    performRfidSync();
+		    delay(500);
+		} while (cardSwiped == true);
 	}
 	if(!doorClosed){
-	    while(!doorClosed){
-	        performDoorSync();
-	        delay(500);
-	    }
+		do{
+		    performDoorSync();
+		    delay(500);
+		} while (doorClosed == false);
 	}
 	// performSync();
 	//updateConfig();
