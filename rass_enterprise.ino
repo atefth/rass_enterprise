@@ -26,12 +26,12 @@ Schedular updater;
 
 void setup()
 {
+	Serial.begin(19200);
 	initRfid();
 	initRelays();
 	initusers();
 	initSite();
-    initLCD();
-    Serial.begin(19200);    
+    initLCD();    
 	initGsm(19200);
 	initWire();	
 	//showDownTime.start();

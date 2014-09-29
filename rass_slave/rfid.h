@@ -3,6 +3,10 @@ void initRfid() {
 }
 
 void wireRfidToMaster(){
+	for (int i = 0; i < 7; i++)
+	{
+		Serial.println(currentUser[i]);
+	}
 	Wire.write(currentUser);
 }
 
