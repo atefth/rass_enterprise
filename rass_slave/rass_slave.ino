@@ -19,6 +19,7 @@ long code;
 static long rfid[TOTAL_USERS];
 static char currentUser[7];
 static int currentAccess;
+static int currentIndex;
 static int access[TOTAL_USERS];
 static int index;
 
@@ -81,5 +82,6 @@ void receiveEvent(int howMany)
 }
 
 void requestEvent(){
-	wireToMaster();
+	// wireRfidToMaster();
+	wireIndexToMaster();
 }

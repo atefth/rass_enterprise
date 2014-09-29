@@ -6,8 +6,9 @@ String SITE_URL = "\"softbot-ras.herokuapp.com/";
 #define BAUDRATE 19200
 static int connection;
 
-static boolean cardSwiped = false;
-static boolean doorClosed = true;
+volatile boolean cardSwiped = false;
+volatile boolean needWire = false;
+volatile boolean doorClosed = true;
 
 #include "relays.h"
 #include "users.h"
@@ -34,7 +35,7 @@ void setup()
 	initSite();
     initLCD();
     Serial.begin(19200);    
-	initGsm(19200);
+	// initGsm(19200);
 	initWire();
 	initRfid();
 	//showDownTime.start();
@@ -46,7 +47,7 @@ void setup()
 
 void loop()
 {
-	sync.check(performSync, 10000);
+	// sync.check(performSync, 10000);
 	if(cardSwiped){
 		do{
 		    performRfidSync();

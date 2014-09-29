@@ -1,6 +1,7 @@
 void onCardSwipe(){
 	Serial.println("interrupted!");
 	cardSwiped = true;
+	needWire = true;
 	doorClosed = false;
 }
 

@@ -273,9 +273,7 @@ void performDoorSync(){
 
 boolean syncRfid(){
     terminateRequest();
-    clearSerialData();
-    long rfid = readRfidFromSlave();
-    Serial.println(rfid);
+    clearSerialData();    
     attemptRfidRequest();
     boolean isLoss = verifyPacket();
     terminateRequest();
@@ -285,6 +283,11 @@ boolean syncRfid(){
 
 void performRfidSync(){
     boolean isLoss = syncRfid();
+    if (needWire == true)
+    {
+        long user = readRfidFromSlave();
+    }
+    needWire = false;
     if (!isLoss)
     {
         cardSwiped = false;
