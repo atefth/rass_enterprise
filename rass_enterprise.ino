@@ -35,7 +35,7 @@ void setup()
 	initSite();
     initLCD();
     Serial.begin(19200);    
-	// initGsm(19200);
+	initGsm(19200);
 	initWire();
 	initRfid();
 	//showDownTime.start();
@@ -47,7 +47,7 @@ void setup()
 
 void loop()
 {
-	// sync.check(performSync, 10000);
+	sync.check(performSync, 10000);
 	if(cardSwiped){
 		do{
 		    performRfidSync();

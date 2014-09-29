@@ -73,25 +73,25 @@ void checkRfid(){
         String digits;
 		for(int i=0; i<TOTAL_USERS; i++){			
 	    	digits = String(code, DEC);
-	    	Serial.println(digits);
+	    	// Serial.println(code);
 		    if (code == rfid[i])
 			{
-				openDoor();
-				notifyMaster();
+				openDoor();				
 				for (int j = 0; j < 7; j++)
 	        	{
 	        		currentUser[j] = digits[j];
-	        	}	        	
+	        	}
 	        	currentAccess = 1;
 	        	currentIndex = i;
-	        }else{
-	        	alertMaster();
+	        	notifyMaster();
+	        }else{	        	
 	        	for (int j = 0; j < 7; j++)
 	        	{
 	        		currentUser[j] = digits[j];
 	        	}
 	        	currentAccess = 0;
 	        	currentIndex = i;
+	        	alertMaster();
 	        }
 		}
 	}

@@ -82,6 +82,6 @@ void receiveEvent(int howMany)
 }
 
 void requestEvent(){
-	// wireRfidToMaster();
-	wireIndexToMaster();
+	wireRfidToMaster();
+	//wireIndexToMaster();
 }
