@@ -1,12 +1,5 @@
-void receiveEvent(){
-	while(Wire.available()){
-		Serial.println(Wire.read;);
-	}
-}
-
 void initWire(){
 	Wire.begin();
-	Wire.onReceive(receiveEvent);
 }
 
 void wireDataToSlave(){
@@ -76,7 +69,7 @@ int readAccessFromSlave(){
 
 long readRfidFromSlave(){
 	long user_id;	
-	Wire.requestFrom(4, 8);		
+	Wire.requestFrom(4, 6);		
 	while(Wire.available()) { 
 		// String digits;
 		// int i = 0;
@@ -91,7 +84,7 @@ long readRfidFromSlave(){
 		//     temp[z] = digits[z];
 		// }
 		// user_id = atol(temp);
-		Serial.println(Wire.read());
+		Serial.println((char)Wire.read());
 	}
 	// Serial.println(user_id);			
 	return 0;

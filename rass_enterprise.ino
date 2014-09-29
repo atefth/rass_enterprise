@@ -68,5 +68,5 @@ void loop()
 	//showDownTime.check(showSyncDuration, 1000);
 	//printDownTime.check(printTimeData, 1000);
 	//printSiteStatus.check(printSiteData, 10000);
-	delay(1000);
+	delay(2000);
 }
