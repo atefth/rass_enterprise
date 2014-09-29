@@ -1,17 +1,27 @@
-void onCardSwipe(){
+volatile boolean cardSwiped = false;
+volatile boolean needWire = false;
+volatile boolean doorClosed = true;
+volatile long openTime;
+volatile long closeTime;
+
+void onDoorStateChange(){
 	Serial.println("interrupted!");
-	cardSwiped = true;
-	needWire = true;
-	doorClosed = false;
+	if (doorClosed)
+	{
+		cardSwiped = true;
+		needWire = true;
+		doorClosed = false;
+		openTime = millis();
+	}else{
+		doorClosed = true;
+		closeTime = millis();
+	}
 }
 
-void onDoorClose(){
-	Serial.println("interrupted!");
-	doorClosed = true;
-	cardSwiped = false;
+long getDuration(){
+	return (closeTime - openTime);
 }
 
 void initRfid(){
-	attachInterrupt(5, onCardSwipe, RISING);
-	attachInterrupt(4, onDoorClose, RISING);
+	attachInterrupt(5, onDoorStateChange, RISING);
 }

@@ -1,5 +1,6 @@
 #define GSM_POWER 6
 SoftwareSerial gsm(50, 51);
+long currentUser;
 
 void clearSerialData(){
 	while(gsm.available()!=0)
@@ -133,7 +134,7 @@ void attemptDoorCloseRequest(){
 
 void attemptRfidRequest(){
     String url = "remoteToOrigin/";
-    url = url + SITE + "/0/1/1234567/1/10/10/2014/12/34/14" + "\"";
+    url = url + SITE + "/0/1/" + currentUser + "/1/10/10/2014/12/34/14" + "\"";
     makeRequest(url);
 }
 
@@ -273,7 +274,7 @@ void performDoorSync(){
 
 boolean syncRfid(){
     terminateRequest();
-    clearSerialData();    
+    clearSerialData();
     attemptRfidRequest();
     boolean isLoss = verifyPacket();
     terminateRequest();
@@ -282,11 +283,11 @@ boolean syncRfid(){
 }
 
 void performRfidSync(){
-    boolean isLoss = syncRfid();
     if (needWire == true)
     {
-        long user = readRfidFromSlave();
+        currentUser = readRfidFromSlave();
     }
+    boolean isLoss = syncRfid();
     needWire = false;
     if (!isLoss)
     {

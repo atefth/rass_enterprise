@@ -11,9 +11,6 @@ long code;
 
 #define TOTAL_USERS 10
 #define SITE 10
-
-#define DENIED 7
-#define GRANTED 8
 #define DOOR 9
 
 static long rfid[TOTAL_USERS];
@@ -28,9 +25,6 @@ static int index;
 
 void setup()
 {        
-	pinMode(GRANTED, OUTPUT);
-	pinMode(DENIED, OUTPUT);
-	pinMode(DOOR, OUTPUT);
 	Wire.begin(4);
 	Wire.onReceive(receiveEvent);
 	Wire.onRequest(requestEvent);

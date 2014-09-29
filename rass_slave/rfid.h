@@ -2,27 +2,8 @@ void initRfid() {
 	wg.begin();
 }
 
-void notifyMaster(){
-	digitalWrite(GRANTED, HIGH);
-	delay(10);
-	digitalWrite(GRANTED, LOW);
-	// delay(10);
-}
-
-void alertMaster(){
-	digitalWrite(DENIED, HIGH);
-	delay(10);
-	digitalWrite(DENIED, LOW);
-	// delay(10);
-}
-
 void wireRfidToMaster(){
-	String digits = "00000000";
-	for (int i = 1; i < 8; i++)
-	{
-		digits[i] = currentUser[i];
-	}
-	Wire.write(digits);
+	Wire.write(currentUser);
 }
 
 void wireIndexToMaster(){
@@ -53,7 +34,6 @@ void checkRfid(){
 	        	}
 	        	currentAccess = 1;
 	        	currentIndex = i;
-	        	notifyMaster();
 	        }else{	        	
 	        	for (int j = 0; j < 7; j++)
 	        	{
@@ -61,7 +41,6 @@ void checkRfid(){
 	        	}
 	        	currentAccess = 0;
 	        	currentIndex = i;
-	        	alertMaster();
 	        }
 		}
 	}
