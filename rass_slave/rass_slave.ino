@@ -7,7 +7,7 @@ long code;
 
 #define TOTAL_USERS 10
 #define SITE 10
-#define DOOR 9
+#define DOOR 7
 
 static long rfid[TOTAL_USERS];
 static char currentUser[7];
