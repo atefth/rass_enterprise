@@ -1,5 +1,12 @@
-void initWire(){    
+void receiveEvent(){
+	while(Wire.available()){
+		Serial.println(Wire.read;);
+	}
+}
+
+void initWire(){
 	Wire.begin();
+	Wire.onReceive(receiveEvent);
 }
 
 void wireDataToSlave(){
@@ -7,9 +14,7 @@ void wireDataToSlave(){
 	for (int i = 0; i < 10; i++){		
 		Wire.beginTransmission(4);
 		Wire.write(i);
-		if (userRfid[i] == "000000000"){			
-			Wire.write(0);
-			Wire.write(0);
+		if (userRfid[i] == "0000000"){			
 			Wire.write(0);
 			Wire.write(0);
 			Wire.write(0);
@@ -18,7 +23,7 @@ void wireDataToSlave(){
 			Wire.write(0);
 			Wire.write(0);
 		}else{
-			for (int j = 0; j < 9; j++)
+			for (int j = 0; j < RFID_NUM; j++)
 			{
 				temp = userRfid[i][j];				
 				switch(temp){
@@ -70,8 +75,8 @@ int readAccessFromSlave(){
 }
 
 long readRfidFromSlave(){
-	long user_id;
-	Wire.requestFrom(4, 1);	
+	long user_id;	
+	Wire.requestFrom(4, 8);		
 	while(Wire.available()) { 
 		// String digits;
 		// int i = 0;
@@ -88,7 +93,6 @@ long readRfidFromSlave(){
 		// user_id = atol(temp);
 		Serial.println(Wire.read());
 	}
-	// Serial.println(user_id);		
-	delay(400);
+	// Serial.println(user_id);			
 	return 0;
 }

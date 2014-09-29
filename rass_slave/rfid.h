@@ -6,17 +6,18 @@ void notifyMaster(){
 	digitalWrite(GRANTED, HIGH);
 	delay(10);
 	digitalWrite(GRANTED, LOW);
-	delay(10);
+	// delay(10);
 }
 
 void alertMaster(){
 	digitalWrite(DENIED, HIGH);
 	delay(10);
 	digitalWrite(DENIED, LOW);
-	delay(10);
+	// delay(10);
 }
 
-void wireRfidToMaster(){	
+void wireRfidToMaster(){
+	Wire.beginTransmission(4);
 	Wire.write(currentAccess);
 	for (int i = 0; i < 7; i++)
 	{
@@ -52,7 +53,8 @@ void wireRfidToMaster(){
 				Wire.write(9);
 				break;
 		}
-	}	
+	}
+	Wire.endTransmission();
 }
 
 void wireIndexToMaster(){
@@ -83,6 +85,7 @@ void checkRfid(){
 	        	}
 	        	currentAccess = 1;
 	        	currentIndex = i;
+	        	wireRfidToMaster();
 	        	notifyMaster();
 	        }else{	        	
 	        	for (int j = 0; j < 7; j++)

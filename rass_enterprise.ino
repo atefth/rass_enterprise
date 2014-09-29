@@ -51,6 +51,8 @@ void loop()
 	if(cardSwiped){
 		do{
 		    performRfidSync();
+		    // readRfidFromSlave();
+		    // cardSwiped = false;
 		    delay(500);
 		} while (cardSwiped == true);
 	}

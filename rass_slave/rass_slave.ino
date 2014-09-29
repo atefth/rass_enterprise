@@ -59,8 +59,8 @@ void printSlaveData(){
 void loop()
 {
 	delay(1000);
-	updater.check(updateConfig, 60000);
-	validator.check(checkRfid, 1);
+	updater.check(updateConfig, 10000);
+	validator.check(checkRfid, 100);
 }
 
 void receiveEvent(int howMany)
