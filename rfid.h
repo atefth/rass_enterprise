@@ -1,21 +1,19 @@
-volatile boolean cardSwiped = false;
-volatile boolean needWire = false;
-volatile boolean doorClosed = true;
-volatile long openTime;
-volatile long closeTime;
-volatile byte interruptCount = 0;
-
 void onDoorStateChange(){
 	Serial.println("interrupted!");
-	if (!doorClosed && interruptCount != 2)
+	Serial.println(interruptCount);
+	if (interruptCount == 0)
 	{
 		cardSwiped = true;
 		needWire = true;
 		doorClosed = false;
 		openTime = millis();
 		interruptCount++;
+	}else if(interruptCount == 1){
+		interruptCount++;
+		//do nothing
 	}else{
 		doorClosed = true;
+		doorSync = true;
 		interruptCount = 0;
 		closeTime = millis();
 	}

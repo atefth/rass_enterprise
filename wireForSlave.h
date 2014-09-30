@@ -68,20 +68,18 @@ int readAccessFromSlave(){
 
 long readRfidFromSlave(){
 	long user_id;	
-	Wire.requestFrom(4, 6);		
+	Wire.requestFrom(4, 8);		
 	while(Wire.available()) { 
-		String digits;
+		// String digits;
+		char temp[7];
 		int i = 0;
 		readAccessFromSlave();
 	    while(1 < Wire.available()) {
-		  digits = digits + Wire.read();	  
+		  temp[i] = (int)Wire.read();
 		  i++;
 		}
-		digits = digits + Wire.read();
-		char temp[7];
-		for(int z=0; z<7; z++){
-		    temp[z] = digits[z];
-		}
+		temp[i] = (int)Wire.read();
+		
 		user_id = atol(temp);
 		// Serial.println((char)Wire.read());
 	}

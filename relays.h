@@ -12,7 +12,8 @@ void initRelays(){
 
 void turnOnRelay(int id){
 	digitalWrite(relays[id], LOW);
-	delay(100);
+	delay(5000);
+  digitalWrite(relays[id], HIGH);
 }
 
 void turnOffRelay(int id){

@@ -268,7 +268,7 @@ void performDoorSync(){
     boolean isLoss = syncDoorClose();
     if (!isLoss)
     {
-        doorClosed = true;
+        doorSync = false;
     }
 }
 
