@@ -14,63 +14,71 @@ volatile long openTime;
 volatile long closeTime;
 volatile int interruptCount = 0;
 
-#include "rfid.h"
+// #include "rfid.h"
 #include "relays.h"
 #include "users.h"
 #include "site.h"
-#include <Wire.h>
-#include "wireForSlave.h"
+// #include <Wire.h>
+// #include "wireForSlave.h"
 #include <SoftwareSerial.h>
 #include <LCD5110_Graph.h>
 #include "lcd.h"
 #include "http.h"
-#include <easyscheduler.h>
+#include "bluetooth.h"
+// #include <easyscheduler.h>
 
-Schedular showDownTime;
-Schedular sync;
-Schedular printDownTime;
-Schedular printSiteStatus;
-Schedular updater;
+// Schedular showDownTime;
+// Schedular sync;
+// Schedular printDownTime;
+// Schedular printSiteStatus;
+// Schedular updater;
 
 void setup()
 {
 	Serial.begin(19200);
-	initRfid();
+	// initRfid();
 	initRelays();
 	initusers();
 	initSite();
-    initLCD();    
+	initLCD();    
 	initGsm(19200);
-	initWire();	
-	showDownTime.start();
-	printDownTime.start();
-	printSiteStatus.start();
+	initBluetooth();
+	// initWire();	
+	// showDownTime.start();
+	// printDownTime.start();
+	// printSiteStatus.start();
 	//updater.start();
-    sync.start();    
+	// sync.start();    
 }
 
 void loop()
 {
-	sync.check(performSync, 10000);
-	if(cardSwiped){
-		do{
-			Serial.println("performing rfid sync");
-		    performRfidSync();
-		    delay(500);
-		} while (cardSwiped == true);
-	}
-	if(doorSync){
-	    do{
-			Serial.println("performing door sync");
-		    performDoorSync();
-		    delay(500);
-		} while (doorSync == true);
-	}
-	// performSync();
+        // sync.check(performSync, 10000);
+	// if(cardSwiped){
+	// 	do{
+	// 		Serial.println("performing rfid sync");
+	// 		performRfidSync();
+	// 		delay(500);
+	// 		} while (cardSwiped == true);
+	// 	}
+	// 	if(doorSync){
+	// 		do{
+	// 			Serial.println("performing door sync");
+	// 			performDoorSync();
+	// 			delay(500);
+	// 			} while (doorSync == true);
+	// 		}
+	performSync();
 	//updateConfig();
 	// showUserData();
-	showDownTime.check(showSyncDuration, 1000);
-	printDownTime.check(printTimeData, 1000);
-	printSiteStatus.check(printSiteData, 10000);
+	// showDownTime.check(showSyncDuration, 1000);
+	// printDownTime.check(printTimeData, 1000);
+	// printSiteStatus.check(printSiteData, 10000);
+	if(Serial1.available()){
+		relay = Serial1.read(); 
+		Serial1.read();
+		status = Serial1.read();
+		updateRelay(relay, status);
+	}
 	delay(1000);
 }

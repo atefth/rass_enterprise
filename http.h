@@ -4,12 +4,12 @@ long currentUser;
 
 void clearSerialData(){
 	while(gsm.available()!=0)
-	gsm.read();
+       gsm.read();
 }
 
 void showSerialData(){
 	while(gsm.available()!=0)
-	Serial.write(gsm.read());
+       Serial.write(gsm.read());
 }
 
 void showRequestData(){
@@ -28,16 +28,16 @@ void checkConnection(){
     char current;
     while(gsm.available() != 0){
     	current = gsm.read();
-		if ( current == '1')
-		{
-	    	connection = true;
-            Serial.println("Connected!");
-		}else if( current == '0'){
-            Serial.println("Not Connected... Retrying!");
-        }
+      if ( current == '1')
+      {
+          connection = true;
+          Serial.println("Connected!");
+      }else if( current == '0'){
+        Serial.println("Not Connected... Retrying!");
     }
-    printConnectionData();
-    delay(100);
+}
+printConnectionData();
+delay(100);
 }
 
 void powerOn(){
@@ -62,11 +62,11 @@ void initGsm(int rate){
       showSerialData();
       delay(1000);
       checkConnection();
-    }
+  }
     gsm.println("AT+SAPBR=3,1,\"CONTYPE\",\"GPRS\"");//setting the SAPBR, the connection type is using gprs
     showSerialData();
     delay(1500);
-   
+    
     gsm.println("AT+SAPBR=3,1,\"APN\",\"internet\"");//setting the APN, the second need you fill in your local apn server
     showSerialData();
     delay(1500);
@@ -108,7 +108,7 @@ void makeRequest(String url){
     gsm.println(requestURL);
     delay(500);
     showSerialData();
-   
+    
     //submit the request 
     gsm.println("AT+HTTPACTION=0");
     delay(4000);
@@ -140,7 +140,7 @@ void attemptRfidRequest(){
 
 boolean readUserAccessRight(){
     boolean isLoss = true;
-	int count = 0;
+    int count = 0;
     char tempUsers[TOTAL_USERS][RFID_NUM];
     int tempAccess[TOTAL_USERS];
 
@@ -149,28 +149,28 @@ boolean readUserAccessRight(){
 
     while(gsm.available()!=0 && justRead != '>'){
       justRead = gsm.read();
-    }
-    int index = 0;
-    while(gsm.available()!=0){
-        justRead = gsm.read();
-        if (count == RFID_NUM)
-        {
-            count = 0;          
-            index++;
-        }
-        if(justRead == '>' || justRead == '!'){
-            isLoss = false;        
-        }
-        if(justRead == '0' || justRead == '1'|| justRead == '2'|| justRead == '3'|| justRead == '4'|| justRead == '5'|| justRead == '6'|| justRead == '7'|| justRead == '8'|| justRead == '9'){            
-            tempUsers[index][count] = justRead;
-            count++;
-        }
-        if(index == TOTAL_USERS) break;
-    }
-    if (!isLoss)
+  }
+  int index = 0;
+  while(gsm.available()!=0){
+    justRead = gsm.read();
+    if (count == RFID_NUM)
     {
-        updateRfid(tempUsers);
+        count = 0;          
+        index++;
     }
+    if(justRead == '>' || justRead == '!'){
+        isLoss = false;        
+    }
+    if(justRead == '0' || justRead == '1'|| justRead == '2'|| justRead == '3'|| justRead == '4'|| justRead == '5'|| justRead == '6'|| justRead == '7'|| justRead == '8'|| justRead == '9'){            
+        tempUsers[index][count] = justRead;
+        count++;
+    }
+    if(index == TOTAL_USERS) break;
+}
+if (!isLoss)
+{
+        // updateRfid(tempUsers);
+}
 }
 
 boolean readRelay(){
@@ -181,31 +181,31 @@ boolean readRelay(){
     int count = 0;
     while(gsm.available()!=0 && justRead != '>'){
       justRead = gsm.read();
+  }
+  while(gsm.available()!=0){      
+    justRead = gsm.read();
+    if(justRead == '>'){
+        isLoss = false;        
     }
-    while(gsm.available()!=0){      
-        justRead = gsm.read();
-        if(justRead == '>'){
-            isLoss = false;        
-        }
-        if(justRead == '0' || justRead == '1'){
-            if (justRead == '0')
-            {
-                temp[count] = 0;
-            }else{
-                temp[count] = 1;
-            }
-            count++;
-        }
-        if(count == TOTAL_RELAYS) break;
-    }
-    if (!isLoss)
-    {
-        for (int i = 0; i < TOTAL_RELAYS; i++)
+    if(justRead == '0' || justRead == '1'){
+        if (justRead == '0')
         {
-            statuses[i] = temp[i];
+            temp[count] = 0;
+        }else{
+            temp[count] = 1;
         }
+        count++;
     }
-    return isLoss;
+    if(count == TOTAL_RELAYS) break;
+}
+if (!isLoss)
+{
+    for (int i = 0; i < TOTAL_RELAYS; i++)
+    {
+        statuses[i] = temp[i];
+    }
+}
+return isLoss;
 }
 
 boolean syncServer(){
@@ -227,10 +227,10 @@ boolean syncServer(){
         setLastSyncTime(millis());
         incrementSuccessfulRequests();
         printConfigData();
-        updateConfig();
+        // updateConfig();
     }else{
         incrementFailedRequests();
-               
+        
     }
     updateFailRate();
     return isLoss;
@@ -272,25 +272,25 @@ void performDoorSync(){
     }
 }
 
-boolean syncRfid(){
-    terminateRequest();
-    clearSerialData();
-    attemptRfidRequest();
-    boolean isLoss = verifyPacket();
-    terminateRequest();
-    clearSerialData();
-    return isLoss;
-}
+// boolean syncRfid(){
+//     terminateRequest();
+//     clearSerialData();
+//     attemptRfidRequest();
+//     boolean isLoss = verifyPacket();
+//     terminateRequest();
+//     clearSerialData();
+//     return isLoss;
+// }
 
-void performRfidSync(){
-    if (needWire == true)
-    {
-        currentUser = readRfidFromSlave();
-    }
-    boolean isLoss = syncRfid();
-    needWire = false;
-    if (!isLoss)
-    {
-        cardSwiped = false;
-    }
-}
+// void performRfidSync(){
+//     if (needWire == true)
+//     {
+//         currentUser = readRfidFromSlave();
+//     }
+//     boolean isLoss = syncRfid();
+//     needWire = false;
+//     if (!isLoss)
+//     {
+//         cardSwiped = false;
+//     }
+// }

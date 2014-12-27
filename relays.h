@@ -5,9 +5,9 @@ void initRelays(){
 	Serial.println("Initializing Relays");
 	for(int i=0; i<TOTAL_RELAYS; i++){
 		statuses[i] = 0;
-	    relays[i] = (22+i);
-	    pinMode(relays[i], OUTPUT);
-	}
+   relays[i] = (22+i);
+   pinMode(relays[i], OUTPUT);
+ }
 }
 
 void turnOnRelay(int id){
@@ -23,12 +23,12 @@ void turnOffRelay(int id){
 
 void toggleSwitch(int id){
 	if(statuses[id]){
-	    statuses[id] = 0;
-	    turnOffRelay(id);
-	}else{
-		statuses[id] = 1;
-		turnOnRelay(id);
-	}
+   statuses[id] = 0;
+   turnOffRelay(id);
+ }else{
+  statuses[id] = 1;
+  turnOnRelay(id);
+}
 }
 
 int getRelayStatus(int id){
@@ -40,42 +40,51 @@ void showRelayData(){
 		Serial.print("relay ");
 		Serial.print(i);
 		Serial.print(" is ");
-	    Serial.println(statuses[i]);
-	}
+   Serial.println(statuses[i]);
+ }
 }
 
 boolean isDoorOpen(){
-    return statuses[0];
-  }
+  return statuses[0];
+}
 
-  boolean isLightOn(){
-    return statuses[1];
-  }
+boolean isLightOn(){
+  return statuses[1];
+}
 
-  boolean isAlarmOn(){
-    return statuses[2];
-  }
+boolean isAlarmOn(){
+  return statuses[2];
+}
 
-  boolean isGeneratorOn(){
-    return statuses[3];
-  }
+boolean isGeneratorOn(){
+  return statuses[3];
+}
 
-  boolean isAcOn(){
-    return statuses[4];
-  }
+boolean isAcOn(){
+  return statuses[4];
+}
 
-  boolean isMainsOn(){
-    return statuses[5];
-  }
+boolean isMainsOn(){
+  return statuses[5];
+}
 
-  void updateRelayStatus(){
-  	for (int i = 0; i < TOTAL_RELAYS; i++)
-  	{
-  		if (statuses[i] == 1)
-  		{
-  			turnOnRelay(i);
-  		}else{
-        turnOffRelay(i);
-      }
-  	}
+void updateRelayStatus(){
+  for (int i = 0; i < TOTAL_RELAYS; i++){
+    if (statuses[i] == 1){
+      turnOnRelay(i);
+    }else{
+      turnOffRelay(i);
+    }
   }
+}
+
+void updateRelay(char relayId, char status){
+  int relay_id = (int)relayId;
+  int status_id = (int)status;
+  if (status_id == 0)
+  {
+    turnOffRelay(relay_id);
+  }else{
+    turnOnRelay(relay_id);
+  }
+}
